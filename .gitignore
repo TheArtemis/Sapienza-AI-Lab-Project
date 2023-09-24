@@ -1,2 +1,4 @@
 data/*
 !data/Readme.md
+test/*
+!test/Readme.md
