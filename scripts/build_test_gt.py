@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 
-print(os.getcwd())
-
 #check if path '../data/38-Cloud_test/Entire_scene_gts' exists
 if not os.path.exists('data/38-Cloud_test/Entire_scene_gts'):
     raise Exception('Path not found: ../data/38-Cloud_test/Entire_scene_gts\n Please run 38-cloud-notebook.ipynb first')
@@ -18,11 +16,10 @@ if not os.path.exists('data/38-Cloud_test/test_gt'):
     os.mkdir('data/38-Cloud_test/test_gt')
 
 # Landsat 8 Collection 1 Level 1 Product SceneID
-print(type(img_names))
 
 #for each image in img_names we want to add margins so it can be divided into 384x384 patches
 for name in img_names:
-    print(name)
+    print(f'Processing: {name}')
     img = np.array(Image.open('data/38-Cloud_test/Entire_scene_gts/edited_corrected_gts_' + name + '.TIF'))
     img_x, img_y = img.shape
 
@@ -52,16 +49,6 @@ for name in img_names:
             #print('saving: ', f'data/38-Cloud_test/test-gt/gt_patch_{i//384+j//384}_{i//384}_{j//384}_{name}.TIF')
             patch.save(patch_name)
             x+=1
-        
 
-
-
-
-
-
-
-
-
-
-
+print('Done!')
 
