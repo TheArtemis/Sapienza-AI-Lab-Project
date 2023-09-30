@@ -4,3 +4,6 @@ test/*
 !test/Readme.md
 __pycache__
 TODO.txt
+imgs/*
+u_net.png
+my_checkpoint.pth.tar
