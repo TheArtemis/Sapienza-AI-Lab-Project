@@ -18,7 +18,7 @@ class DoubleConv(nn.Module):
             nn.ReLU(inplace=True),
         )
 
-        print(f'Building DoubleConvolution: {in_channels} and out_channels: {out_channels}')
+        #print(f'Building DoubleConvolution: {in_channels} and out_channels: {out_channels}')
 
     def forward(self, x):
         return self.conv(x)
@@ -60,7 +60,7 @@ class UNET(nn.Module):
         for down in self.downs:
             x = down(x)
             skip_connections.append(x)
-            print(f'Adding pool: {x.shape}')
+            #print(f'Adding pool: {x.shape}')
             x = self.pool(x)
 
         x = self.bottle_neck(x)
@@ -70,7 +70,7 @@ class UNET(nn.Module):
             x = self.ups[idx](x)
             skip_connection = skip_connections[idx//2]
             concat_skip = torch.cat((skip_connection, x), dim=1)
-            print(f'Concatenating skip connection: {concat_skip.shape}')
+            #print(f'Concatenating skip connection: {concat_skip.shape}')
             x = self.ups[idx+1](concat_skip)
 
         return self.final_conv(x)
