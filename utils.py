@@ -41,7 +41,7 @@ def save_predictions_as_imgs(loader, model, folder='imgs/', device='cuda'):
         torchvision.utils.save_image(
             preds, f'{folder}/pred_{idx}.png'
         )
-        """ torchvision.utils.save_image(
-            y, f'{folder}/mask_{idx}.png'
-        ) """
+        torchvision.utils.save_image(
+            y.unsqueeze(1), f'{folder}/mask_{idx}.png'
+        )
         #print(y.shape)
