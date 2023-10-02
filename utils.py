@@ -38,6 +38,7 @@ def save_predictions_as_imgs(loader, model, folder='imgs/', device='cuda'):
         with torch.no_grad():
             preds = torch.sigmoid(model(x))
             preds = (preds > 0.5).float()
+            
         torchvision.utils.save_image(
             preds, f'{folder}/pred_{idx}.png'
         )
