@@ -1,5 +1,7 @@
 import torch
 import torchvision
+import sklearn.metrics as mt
+import numpy as np
 
 def save_checkpoint(state, filename='my_checkpoint.pth.tar'):
     print('Saving checkpoint')
@@ -48,4 +50,59 @@ def save_predictions_as_imgs(loader, model, folder='imgs/', device='cuda'):
             preds, f'{folder}/pred_{idx}.png'
         )
 
-    model.train()      
+    model.train()
+
+
+# A function to calculate all the metrics we need with sklearn 
+
+def evaluate_model(loader, model, loss_fn, device='cuda'):
+    model.eval()
+    y_true = []
+    y_pred = []
+    with torch.no_grad():
+        for x, y in loader:
+            x = x.to(device)
+            y = y.to(device).unsqueeze(1)
+
+            preds = torch.sigmoid(model(x))
+            preds = (preds > 0.5).float()
+
+            y_true.append(y.cpu().numpy())
+            y_pred.append(preds.cpu().numpy())
+
+    y_true = np.array(y_true).flatten()
+    y_pred = np.array(y_pred).flatten()
+    
+    acc = mt.accuracy_score(y_true, y_pred)
+    precision = mt.precision_score(y_true, y_pred)
+    recall = mt.recall_score(y_true, y_pred)
+    f1 = mt.f1_score(y_true, y_pred)
+    loss = loss_fn(torch.tensor(y_pred), torch.tensor(y_true).float())   
+    
+    print(f'Accuracy: {acc:.2f}')
+    print(f'Precision: {precision:.2f}')
+    print(f'Recall: {recall:.2f}')
+    print(f'F1 score: {f1:.2f}')
+    print(f'Loss: {loss:.2f}')    
+
+    model.train()
+    return acc, precision, recall, f1, loss
+
+
+# function to test evaluate_model
+def test():
+    y_true = np.array([[1, 0, 1, 0, 1, 0, 1, 0], [1, 0, 1, 0, 1, 0, 1, 0]]).flatten()
+    y_pred = np.array([[1, 1, 1, 0, 1, 0, 1, 0], [1, 0, 1, 0, 1, 0, 1, 0]]).flatten()
+
+    acc = mt.accuracy_score(y_true, y_pred)
+    precision = mt.precision_score(y_true, y_pred)
+    recall = mt.recall_score(y_true, y_pred)
+    f1 = mt.f1_score(y_true, y_pred)
+
+    print(f'Accuracy: {acc:.2f}')
+    print(f'Precision: {precision:.2f}')
+    print(f'Recall: {recall:.2f}')
+    print(f'F1 score: {f1:.2f}')
+
+if __name__ == '__main__':
+    test()
