@@ -2,6 +2,7 @@ import torch
 import torchvision
 import sklearn.metrics as mt
 import numpy as np
+import pandas as pd
 
 def save_checkpoint(state, filename='my_checkpoint.pth.tar'):
     print('Saving checkpoint')
@@ -77,7 +78,7 @@ def evaluate_model(loader, model, loss_fn, device='cuda'):
     precision = mt.precision_score(y_true, y_pred)
     recall = mt.recall_score(y_true, y_pred)
     f1 = mt.f1_score(y_true, y_pred)
-    loss = loss_fn(torch.tensor(y_pred), torch.tensor(y_true).float())   
+    loss = loss_fn(torch.tensor(y_pred), torch.tensor(y_true).float()).item()   
     
     print(f'Accuracy: {acc:.2f}')
     print(f'Precision: {precision:.2f}')
@@ -87,6 +88,13 @@ def evaluate_model(loader, model, loss_fn, device='cuda'):
 
     model.train()
     return acc, precision, recall, f1, loss
+
+def update_metrics(df, loader, model, loss_fn, model_name, epoch, train_loss, device='cuda'):
+    acc, prec, rec, f1, val_loss = evaluate_model(loader, model, loss_fn, device)
+
+    new_row = {'model': model_name, 'epoch': epoch, 'train_loss': train_loss, 'val_loss': val_loss, 'accuracy': acc, 'precision': prec, 'recall': rec, 'f1': f1}
+    df = df.append(new_row, ignore_index=True)
+    return df     
 
 
 # function to test evaluate_model
