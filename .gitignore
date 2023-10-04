@@ -8,4 +8,7 @@ imgs/*
 u_net.png
 my_checkpoint.pth.tar
 models/*
-out/*
+!models/*.txt
+!models/*.csv
+
+
