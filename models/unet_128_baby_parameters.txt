@@ -1,0 +1,7 @@
+Learning rate: 0.0001
+Batch size: 16
+Number of epochs: 30
+Image resize: 128
+Model name: unet_128_baby
+Subset size: 1000
+Normalize: True
