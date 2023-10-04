@@ -91,25 +91,19 @@ def evaluate_model(loader, model, loss_fn, device='cuda'):
 
 def get_val_loss(loader, model, loss_fn, device='cuda'):
     model.eval()
-    val_loss = 0
-    y_true = []
-    y_pred = []
+    val_loss = 0    
     with torch.no_grad():
         for x, y in loader:
             x = x.to(device)
-            y = y.to(device).unsqueeze(1)
+            y = y.to(device).unsqueeze(1).float()
 
             preds = torch.sigmoid(model(x))
             preds = (preds > 0.5).float()
 
-            y_true.append(y.cpu().numpy())
-            y_pred.append(preds.cpu().numpy())
+            val_loss += loss_fn(preds, y).item() * x.shape[0]
 
-    y_true = np.array(y_true).flatten()
-    y_pred = np.array(y_pred).flatten()
-    val_loss = loss_fn(torch.tensor(y_pred), torch.tensor(y_true).float()).item()   
     model.train()
-    return val_loss
+    return val_loss / len(loader.dataset)
 
 def update_losses(df, loader, model, loss_fn, model_name, epoch, train_loss):
     val_loss = get_val_loss(loader, model, loss_fn)
