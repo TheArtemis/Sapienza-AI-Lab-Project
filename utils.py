@@ -89,6 +89,34 @@ def evaluate_model(loader, model, loss_fn, device='cuda'):
     model.train()
     return acc, precision, recall, f1, loss
 
+def get_val_loss(loader, model, loss_fn, device='cuda'):
+    model.eval()
+    val_loss = 0
+    y_true = []
+    y_pred = []
+    with torch.no_grad():
+        for x, y in loader:
+            x = x.to(device)
+            y = y.to(device).unsqueeze(1)
+
+            preds = torch.sigmoid(model(x))
+            preds = (preds > 0.5).float()
+
+            y_true.append(y.cpu().numpy())
+            y_pred.append(preds.cpu().numpy())
+
+    y_true = np.array(y_true).flatten()
+    y_pred = np.array(y_pred).flatten()
+    val_loss = loss_fn(torch.tensor(y_pred), torch.tensor(y_true).float()).item()   
+    model.train()
+    return val_loss
+
+def update_losses(df, loader, model, loss_fn, model_name, epoch, train_loss):
+    val_loss = get_val_loss(loader, model, loss_fn)
+    new_row = {'model': model_name, 'epoch': epoch, 'train_loss': train_loss, 'val_loss': val_loss}
+    df = df.append(new_row, ignore_index=True)
+    return df
+
 def update_metrics(df, loader, model, loss_fn, model_name, epoch, train_loss, device='cuda'):
     acc, prec, rec, f1, val_loss = evaluate_model(loader, model, loss_fn, device)
 
