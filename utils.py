@@ -100,7 +100,7 @@ def get_val_loss(loader, model, loss_fn, device='cuda'):
             preds = torch.sigmoid(model(x))
             preds = (preds > 0.5).float()
 
-            val_loss += loss_fn(preds, y).item() * x.shape[0]
+            val_loss += loss_fn(preds, y).item() 
 
     model.train()
     return val_loss / len(loader.dataset)
