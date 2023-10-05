@@ -1,1 +1,1 @@
-{'model_name': 'unet_128_1e-3', 'lr': 0.001, 'batch_size': 32, 'epoches': 15, 'resize': 128, 'subset_size': 500, 'normalize': True}
+{'model_name': 'unet_128_1e-3', 'lr': 0.001, 'batch_size': 32, 'epoches': 30, 'resize': 128, 'subset_size': 500, 'normalize': True}
