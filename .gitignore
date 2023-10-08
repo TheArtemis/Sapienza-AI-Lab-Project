@@ -1,6 +1,7 @@
 data/*
 !data/Readme.md
 test/*
+!test/unet_256_firstborn
 !test/Readme.md
 __pycache__
 TODO.txt
